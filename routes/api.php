@@ -4,6 +4,7 @@ use App\Http\Controllers\MateriController;
 use App\Http\Controllers\StudentAuthController;
 use App\Http\Controllers\QuizController;
 use App\Http\Controllers\QuestionController;
+use App\Http\Controllers\StudentQuizController;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -49,4 +50,11 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/question/{id}', [QuestionController::class, 'show']);
     Route::put('/question/{id}', [QuestionController::class, 'update']);
     Route::delete('/question/{id}', [QuestionController::class, 'destroy']);
+});
+    //Route For Quiz
+    Route::middleware('auth:sanctum')->group(function () {
+    Route::get('/quiz/{quizId}/questions', [StudentQuizController::class, 'getQuestions']);
+    Route::post('/quiz/{quizId}/submit', [StudentQuizController::class, 'submit']);
+    Route::get('/quiz/{quizId}/result', [StudentQuizController::class, 'getResult']);
+    Route::get('/student/quiz/results', [StudentQuizController::class, 'results']);
 });
