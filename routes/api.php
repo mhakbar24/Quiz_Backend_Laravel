@@ -5,7 +5,8 @@ use App\Http\Controllers\StudentAuthController;
 use App\Http\Controllers\QuizController;
 use App\Http\Controllers\QuestionController;
 use App\Http\Controllers\StudentQuizController;
-
+use App\Http\Controllers\ChatController;
+use App\Http\Controllers\TtsController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -15,6 +16,9 @@ Route::post('teacher/register', [TeacherAuthController::class, 'register']);
 Route::post('teacher/login', [TeacherAuthController::class, 'login']);
 Route::post('student/register', [StudentAuthController::class, 'register']);
 Route::post('/student/login', [StudentAuthController::class, 'login']);
+Route::post('/chat', [ChatController::class, 'send']);
+Route::post('/tts', [TtsController::class, 'synthesize']);
+
 // Teacher profile and update routes
 Route::middleware('auth:sanctum')->group(function () {
     Route::get('teacher/profile', [TeacherAuthController::class, 'profile']);
