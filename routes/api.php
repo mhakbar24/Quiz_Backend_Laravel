@@ -19,9 +19,10 @@ Route::post('/student/login', [StudentAuthController::class, 'login']);
 Route::post('/chat', [ChatController::class, 'send']);
 Route::post('/tts', [TtsController::class, 'synthesize']);
 
-// Teacher profile and update routes
+
 Route::middleware('auth:sanctum')->group(function () {
     Route::get('teacher/profile', [TeacherAuthController::class, 'profile']);
+    Route::get('teacher/siswa', [TeacherAuthController::class, 'getStudents']);
     Route::put('teacher/update', [TeacherAuthController::class, 'update']);
     Route::post('teacher/logout', [TeacherAuthController::class, 'logout']);
     Route::get('/materi/mine', [MateriController::class, 'myMateri']);      // Lihat semua materi milik guru
@@ -31,6 +32,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::put('materi/{id}', [MateriController::class, 'update']);  // Update materi
     Route::delete('materi/{id}', [MateriController::class, 'destroy']); // Hapus materis
     Route::get('/student/profile', [StudentAuthController::class, 'profile']); // Get Data Siswa
+    Route::put('/student/update', [StudentAuthController::class, 'update']);
     // Auth siswa
 
     Route::middleware('auth:sanctum')->post('/student/logout', [StudentAuthController::class, 'logout']);

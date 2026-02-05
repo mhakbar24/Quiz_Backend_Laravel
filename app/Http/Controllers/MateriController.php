@@ -48,6 +48,7 @@ class MateriController extends Controller
     {
           $request->validate([
         'title' => 'required|string|max:255',
+        'category' => 'nullable|string',
         'description' => 'nullable|string',
         'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048'
         ]);
@@ -59,6 +60,7 @@ class MateriController extends Controller
 
     $materi = Materi::create([
         'title' => $request->title,
+        'category' => $request->category,
         'description' => $request->description,
         'teacher_id' => $request->user()->id,
         'image' => $imagePath
@@ -98,6 +100,7 @@ class MateriController extends Controller
         // Validasi input
         $validatedData = $request->validate([
             'title' => 'sometimes|string|max:255',
+            'category' => 'sometimes|string',
             'description' => 'sometimes|string',
             'image' => 'sometimes|image|mimes:jpeg,png,jpg,gif|max:2048'
         ]);

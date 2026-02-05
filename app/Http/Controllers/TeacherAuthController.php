@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Teacher;
+use App\Models\Student;
 use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\Hash;
 class TeacherAuthController extends Controller
@@ -25,7 +26,7 @@ class TeacherAuthController extends Controller
                 'email',
                 Rule::unique('teachers')->ignore($teacher->id),
             ],
-            'password' => 'sometimes|required|string|min:6|confirmed'
+            'password' => 'sometimes|required|string|confirmed'
         ]);
 
         if (!empty($validatedData['password'])) {
@@ -45,7 +46,7 @@ class TeacherAuthController extends Controller
         $request->validate([
             'name' => 'required|string|max:255',
             'email' => 'required|email|unique:teachers',
-            'password' => 'required|string|min:6|confirmed'
+            'password' => 'required|string|confirmed'
         ]);
 
         $teacher = Teacher::create([
@@ -83,6 +84,25 @@ class TeacherAuthController extends Controller
             'token_type' => 'Bearer',
             'teacher' => $teacher
         ], 200);
+    }
+    public function getStudents(Request $request)
+    {
+        $teacher = $request->user();
+        if (!$teacher instanceof Teacher) {
+            return response()->json([
+                'ok' => false,
+                'message' => 'Akses ditolak (khusus guru).'
+            ], 403);
+        }
+        $students = Student::query()
+            ->select(['id', 'name', 'email', 'created_at'])
+            ->orderBy('name')
+            ->get();
+
+        return response()->json([
+            'ok' => true,
+            'students' => $students
+        ]);
     }
     public function logout(Request $request)
     {

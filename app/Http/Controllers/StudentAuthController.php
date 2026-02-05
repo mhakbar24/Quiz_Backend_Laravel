@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Student;
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\Hash;
 
 class StudentAuthController extends Controller
@@ -14,7 +15,7 @@ class StudentAuthController extends Controller
         $request->validate([
             'name'     => 'required|string|max:255',
             'email'    => 'required|string|email|unique:students,email',
-            'password' => 'required|string|min:6',
+            'password' => 'required|string',
         ]);
 
         $student = Student::create([
@@ -57,4 +58,32 @@ class StudentAuthController extends Controller
 {
     return response()->json($request->user());
 }
+public function update(Request $request)
+    {   
+        /** @var \App\Models\Student $student */
+        $student = $request->user();
+
+        $validatedData = $request->validate([
+            'name' => 'sometimes|required|string|max:255',
+            'email' => [
+                'sometimes',
+                'required',
+                'email',
+                Rule::unique('students')->ignore($student->id),
+            ],
+            'password' => 'sometimes|required|string|confirmed'
+        ]);
+
+        if (!empty($validatedData['password'])) {
+            $validatedData['password'] = Hash::make($validatedData['password']);
+        }
+
+        $student->update($validatedData);
+
+        return response()->json([
+            'message' => 'Data guru berhasil diupdate',
+            'student' => $student->fresh() // Mengembalikan data terbaru
+        ]);
+    }
+    
 }

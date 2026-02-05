@@ -14,6 +14,7 @@ return new class extends Migration
         Schema::create('materis', function (Blueprint $table) {
             $table->id();
             $table->string('title');
+            $table->string('category')->nullable();
             $table->text('description')->nullable();
             $table->string('image')->nullable();
             $table->foreignId('teacher_id')->constrained('teachers')->onDelete('cascade');
