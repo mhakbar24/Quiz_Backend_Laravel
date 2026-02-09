@@ -9,6 +9,7 @@ class Materi extends Model
 {
     protected $fillable = [
     'title',
+    'category',
     'description',
     'image',
     'teacher_id'

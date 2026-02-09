@@ -17,6 +17,7 @@ class MateriResource extends JsonResource
         return [
             'id'          => $this->id,
             'title'       => $this->title,
+            'category'    => $this->category,
             'description' => $this->description,
             'image'       => $this->image ? url('storage/' . $this->image) : null,
             'teacher'     => new TeacherResource($this->whenLoaded('teacher')),

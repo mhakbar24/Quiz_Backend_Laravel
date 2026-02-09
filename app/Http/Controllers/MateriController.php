@@ -117,7 +117,6 @@ class MateriController extends Controller
 
         // Update data materi dengan data yang sudah divalidasi
         $materi->update($validatedData);
-
         // Muat ulang relasi teacher untuk memastikan data ter-update pada respons
         $materi->load('teacher');
         return new MateriResource($materi);

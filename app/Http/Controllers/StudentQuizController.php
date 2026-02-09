@@ -72,16 +72,27 @@ class StudentQuizController extends Controller
     
      // 3. Lihat hasil quiz siswa
     public function getResult($quizId)
-    {
-        $studentId = auth()->id();
+{
+    $studentId = auth()->id();
 
-        $result = QuizResult::with('answers.question')
-            ->where('quiz_id', $quizId)
-            ->where('student_id', $studentId)
-            ->firstOrFail();
+    $result = StudentQuizResult::with(['quiz', 'student'])
+        ->where('quiz_id', $quizId)
+        ->where('student_id', $studentId)
+        ->latest()
+        ->first();
 
-        return response()->json($result);
+    if (!$result) {
+        return response()->json([
+            'ok' => false,
+            'message' => 'Hasil quiz belum ada. Silakan submit quiz dulu.'
+        ], 404);
     }
+
+    return response()->json([
+        'ok' => true,
+        'data' => $result
+    ], 200);
+}
 
     public function results()
     {
