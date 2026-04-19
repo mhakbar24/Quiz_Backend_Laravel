@@ -6,6 +6,7 @@ use App\Models\Student;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Storage;
 
 class StudentAuthController extends Controller
 {
@@ -16,12 +17,19 @@ class StudentAuthController extends Controller
             'name'     => 'required|string|max:255',
             'email'    => 'required|string|email|unique:students,email',
             'password' => 'required|string',
+            'photo'    => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
+
+        $photoPath = null;
+        if ($request->hasFile('photo')) {
+            $photoPath = $request->file('photo')->store('student_photos', 'public');
+        }
 
         $student = Student::create([
             'name'     => $request->name,
             'email'    => $request->email,
             'password' => Hash::make($request->password),
+            'photo'    => $photoPath,
         ]);
 
         return response()->json([
@@ -72,10 +80,18 @@ public function update(Request $request)
                 Rule::unique('students')->ignore($student->id),
             ],
             'password' => 'sometimes|required|string|confirmed'
+            ,'photo' => 'sometimes|nullable|image|mimes:jpeg,png,jpg,gif|max:2048'
         ]);
 
         if (!empty($validatedData['password'])) {
             $validatedData['password'] = Hash::make($validatedData['password']);
+        }
+
+        if ($request->hasFile('photo')) {
+            if ($student->photo) {
+                Storage::disk('public')->delete($student->photo);
+            }
+            $validatedData['photo'] = $request->file('photo')->store('student_photos', 'public');
         }
 
         $student->update($validatedData);

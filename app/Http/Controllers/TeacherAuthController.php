@@ -95,7 +95,7 @@ class TeacherAuthController extends Controller
             ], 403);
         }
         $students = Student::query()
-            ->select(['id', 'name', 'email', 'created_at'])
+            ->select(['id', 'name', 'email', 'photo', 'created_at'])
             ->orderBy('name')
             ->get();
 
